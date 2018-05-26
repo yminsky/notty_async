@@ -1,0 +1,6 @@
+(library
+ ((name notty_async)
+  (libraries (async notty lwt notty_unix))
+  (preprocess (pps (ppx_jane)))
+  (inline_tests)
+  (flags (:standard -short-paths))))
