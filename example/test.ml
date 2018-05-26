@@ -121,8 +121,8 @@ let run () =
              Pipe.close_read events
            | _ ->
              ())
-        | `Resize _ ->
-          m := Model.set_dim !m (Term.size term)
+        | `Resize size ->
+          m := Model.set_dim !m size
         | _ -> ()
       ));
   Clock.every' (sec 0.05) ~stop (fun () ->

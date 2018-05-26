@@ -1,7 +1,5 @@
-B ../../_build/default/notty/notty/.notty.objs
-B ../../_build/default/notty/unix/.notty_unix.objs
-B ../../_build/default/notty_async/example/.test.eobjs
-B ../../_build/default/notty_async/src/.notty_async.objs
+B ../_build/default/example/.test.eobjs
+B ../_build/default/src/.notty_async.objs
 B /home/yminsky/.opam/default/lib/async
 B /home/yminsky/.opam/default/lib/async_extra
 B /home/yminsky/.opam/default/lib/async_kernel
@@ -19,7 +17,7 @@ B /home/yminsky/.opam/default/lib/core_kernel
 B /home/yminsky/.opam/default/lib/core_kernel/base_for_tests
 B /home/yminsky/.opam/default/lib/fieldslib
 B /home/yminsky/.opam/default/lib/jane-street-headers
-B /home/yminsky/.opam/default/lib/lwt
+B /home/yminsky/.opam/default/lib/notty
 B /home/yminsky/.opam/default/lib/ocaml
 B /home/yminsky/.opam/default/lib/ocaml/threads
 B /home/yminsky/.opam/default/lib/parsexp
@@ -34,7 +32,6 @@ B /home/yminsky/.opam/default/lib/ppx_inline_test/config
 B /home/yminsky/.opam/default/lib/ppx_inline_test/runtime-lib
 B /home/yminsky/.opam/default/lib/ppx_sexp_conv/runtime-lib
 B /home/yminsky/.opam/default/lib/protocol_version_header
-B /home/yminsky/.opam/default/lib/result
 B /home/yminsky/.opam/default/lib/sexplib
 B /home/yminsky/.opam/default/lib/sexplib/unix
 B /home/yminsky/.opam/default/lib/sexplib0
@@ -47,11 +44,9 @@ B /home/yminsky/.opam/default/lib/uucp
 B /home/yminsky/.opam/default/lib/uuseg
 B /home/yminsky/.opam/default/lib/uutf
 B /home/yminsky/.opam/default/lib/variantslib
-FLG -ppx '/home/yminsky/Documents/code/notty-work/_build/default/.ppx/ppx_jane/ppx.exe --as-ppx'
+FLG -ppx '/home/yminsky/Documents/code/notty_async/_build/default/.ppx/ppx_jane/ppx.exe --as-ppx'
 FLG -w -40 -short-paths
 S .
-S ../../notty/notty
-S ../../notty/unix
 S ../src
 S /home/yminsky/.opam/default/lib/async
 S /home/yminsky/.opam/default/lib/async_extra
@@ -70,7 +65,7 @@ S /home/yminsky/.opam/default/lib/core_kernel
 S /home/yminsky/.opam/default/lib/core_kernel/base_for_tests
 S /home/yminsky/.opam/default/lib/fieldslib
 S /home/yminsky/.opam/default/lib/jane-street-headers
-S /home/yminsky/.opam/default/lib/lwt
+S /home/yminsky/.opam/default/lib/notty
 S /home/yminsky/.opam/default/lib/ocaml
 S /home/yminsky/.opam/default/lib/ocaml/threads
 S /home/yminsky/.opam/default/lib/parsexp
@@ -85,7 +80,6 @@ S /home/yminsky/.opam/default/lib/ppx_inline_test/config
 S /home/yminsky/.opam/default/lib/ppx_inline_test/runtime-lib
 S /home/yminsky/.opam/default/lib/ppx_sexp_conv/runtime-lib
 S /home/yminsky/.opam/default/lib/protocol_version_header
-S /home/yminsky/.opam/default/lib/result
 S /home/yminsky/.opam/default/lib/sexplib
 S /home/yminsky/.opam/default/lib/sexplib/unix
 S /home/yminsky/.opam/default/lib/sexplib0
