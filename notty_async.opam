@@ -1,0 +1,17 @@
+opam-version: "1.2"
+maintainer: "yminsky@gmail.com"
+authors: ["Yaron Minsky"]
+homepage: "https://github.com/yminsky/notty_async"
+bug-reports: "https://github.com/yminsky/notty_async/issues"
+dev-repo: "git+https://github.com/yminsky/notty_async.git"
+
+build: [
+  ["jbuilder" "subst"] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+
+build-test: ["jbuilder" "runtest" "-p" name]
+
+depends: [
+  "jbuilder" "notty" "async" "base"
+]
