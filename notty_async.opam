@@ -1,4 +1,5 @@
 opam-version: "1.2"
+version: "0.1"
 maintainer: "yminsky@gmail.com"
 authors: ["Yaron Minsky"]
 homepage: "https://github.com/yminsky/notty_async"
@@ -13,5 +14,5 @@ build: [
 build-test: ["jbuilder" "runtest" "-p" name]
 
 depends: [
-  "jbuilder" "notty" "async" "base"
+  "jbuilder" "notty.unix" "async" "base"
 ]
