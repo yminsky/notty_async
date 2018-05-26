@@ -93,41 +93,38 @@ end = struct
 end
 
 let run () =
-  let%bind term = Term.create () in
-  let events = Term.events term in
-  let stop = Pipe.closed events in
-  let m = ref (Model.create ~dim:(Term.size term) ~cursor:(0,0)) in
-  don't_wait_for (
-    Pipe.iter_without_pushback events ~f:(fun ev ->
-        match ev with
-        | `Mouse (`Release, pos, _) ->
-          m := Model.set_cursor !m pos
-        | `Mouse (`Drag, pos, _) ->
-          (* This case doesn't ever seem to happen... *)
-          m := Model.set_hover !m pos
-        | `Key (`Arrow dir, _) ->
-          let offset = match dir with
-            | `Down  -> (0,1)
-            | `Up    -> (0,-1)
-            | `Left  -> (-1,0)
-            | `Right -> (1,0)
-          in
-          m := Model.set_cursor !m (Pos.(+) !m.cursor offset)
-        | `Key key  ->
-          (match key with
-           | ((`Enter | `ASCII 'x'),[]) ->
-             m := Model.toggle_mark !m
-           | (`ASCII 'C', [`Ctrl]) ->
-             Pipe.close_read events
-           | _ ->
-             ())
-        | `Resize _ ->
-          m := Model.set_dim !m (Term.size term)
-        | _ -> ()
-      ));
+  let stop_i = Ivar.create () in
+  let stop = Ivar.read stop_i in
+  let m = ref (Model.create ~dim:(80,24) ~cursor:(0,0)) in
+  let%bind term =
+    Term.create ()
+      ~stop
+      ~on_resize:(fun size -> m := Model.set_dim !m size)
+      ~on_input:(function
+          | `Mouse (`Release, pos, _) ->
+            m := Model.set_cursor !m pos
+          | `Mouse (`Drag, pos, _) ->
+            (* This case doesn't ever seem to happen... *)
+            m := Model.set_hover !m pos
+          | `Key (`Arrow dir, _) ->
+            let offset = match dir with
+              | `Down  -> (0,1)
+              | `Up    -> (0,-1)
+              | `Left  -> (-1,0)
+              | `Right -> (1,0)
+            in
+            m := Model.set_cursor !m (Pos.(+) !m.cursor offset)
+          | `Key key  ->
+            (match key with
+             | ((`Enter | `ASCII 'x'),[]) -> m := Model.toggle_mark !m
+             | (`ASCII 'C', [`Ctrl]) -> Ivar.fill stop_i ()
+             | _ ->
+               ())
+          | _ -> ())
+  in
   Clock.every' (sec 0.05) ~stop (fun () ->
-      let%bind () = Term.image term (Model.render !m) in
-      Term.cursor term (Some !m.cursor));
+      let%bind () = Term.write_image term (Model.render !m) in
+      Term.set_cursor term (Some !m.cursor));
   stop
 
 let command =
