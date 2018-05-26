@@ -18,5 +18,6 @@ module Term : sig
   val image : t -> Notty.image -> unit Deferred.t
   val cursor : t -> (int * int) option -> unit Deferred.t
   val size : t -> int * int
-  val events : t -> [ Notty.Unescape.event | `Resize of (int * int) ] Pipe.Reader.t
+  val events :
+    t -> [ Notty.Unescape.event | `Resize of (int * int) ] Pipe.Reader.t
 end
