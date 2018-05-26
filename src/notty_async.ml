@@ -168,10 +168,6 @@ include Notty_unix.Private.Gen_output (struct
     | `Ok x -> x
 
   let write (lazy w) buf =
-    (* CR yminsky: this function seems insane, but seems to match how
-       the Lwt bindings for notty work. In particular, getting the
-       contents of the buffer and writing to it seems utterly
-       pointless. *)
     let bytes = Buffer.contents_bytes buf in
     Writer.write_bytes w bytes ~pos:0 ~len:(Bytes.length bytes);
     Writer.flushed w
