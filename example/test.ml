@@ -11,21 +11,21 @@ end
 module Model : sig
   type t = private
     { dim    : Pos.t
-    ; marks  : Set.M(Pos).t
+    ; marks  : Notty.A.color Map.M(Pos).t
     ; cursor : Pos.t
     ; hover  : Pos.t option
     }
-  val create : dim:Pos.t -> cursor:Pos.t -> t
-  val set_dim : t -> Pos.t -> t
-  val render : t -> Notty.image
+  val create      : dim:Pos.t -> cursor:Pos.t -> t
+  val set_dim     : t -> Pos.t -> t
+  val render      : t -> Notty.image
   val toggle_mark : t -> t
-  val cursor : t -> Pos.t
-  val set_cursor : t -> Pos.t -> t
-  val set_hover : t -> Pos.t -> t
+  val cursor      : t -> Pos.t
+  val set_cursor  : t -> Pos.t -> t
+  val set_hover   : t -> Pos.t -> t
 end = struct
   type t =
     { dim : Pos.t
-    ; marks : Set.M(Pos).t
+    ; marks : Notty.A.color Map.M(Pos).t
     ; cursor : Pos.t
     ; hover : Pos.t option
     } [@@deriving fields]
@@ -57,13 +57,17 @@ end = struct
     { t with hover = Some pos }
 
   let create ~dim ~cursor =
-    { dim; cursor; hover = None; marks = Set.empty (module Pos) }
+    { dim; cursor; hover = None; marks = Map.empty (module Pos) }
+
+  let rand_color () =
+    let c () = Random.int 256 in
+    A.rgb_888 ~r:(c ())  ~g:(c ())  ~b:(c ())
 
   let toggle_mark t =
     let marks =
-      if Set.mem t.marks t.cursor
-      then Set.remove t.marks t.cursor
-      else Set.add t.marks t.cursor
+      if Map.mem t.marks t.cursor
+      then Map.remove t.marks t.cursor
+      else Map.set t.marks ~key:t.cursor ~data:(rand_color ())
     in
     { t with marks }
 
@@ -84,8 +88,8 @@ end = struct
         board
         |> place (I.string (base_attr t hover) ".") hover
     in
-    Set.fold t.marks ~init:board ~f:(fun board pos ->
-        place (I.string (A.fg A.red) "x") pos board)
+    Map.fold t.marks ~init:board ~f:(fun ~key:pos ~data:color board ->
+        place (I.string (A.fg color) "#") pos board)
 end
 
 let run () =
