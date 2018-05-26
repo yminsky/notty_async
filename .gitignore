@@ -2,3 +2,5 @@
 _build
 .merlin
 */.merlin
+notty_async.install
+jbuilder-workspace
