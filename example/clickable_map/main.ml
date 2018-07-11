@@ -10,22 +10,25 @@ end
 
 module Model : sig
   type t = private
-    { dim    : Pos.t
-    ; marks  : Notty.A.color Map.M(Pos).t
-    ; cursor : Pos.t
-    ; hover  : Pos.t option
+    { dim        : Pos.t
+    ; marks      : Notty.A.color Map.M(Pos).t
+    ; mark_color : Notty.A.color
+    ; cursor     : Pos.t
+    ; hover      : Pos.t option
     }
-  val create      : dim:Pos.t -> cursor:Pos.t -> t
-  val set_dim     : t -> Pos.t -> t
-  val render      : t -> Notty.image
-  val toggle_mark : t -> t
-  val cursor      : t -> Pos.t
-  val set_cursor  : t -> Pos.t -> t
-  val set_hover   : t -> Pos.t -> t
+  val create           : dim:Pos.t -> cursor:Pos.t -> t
+  val set_dim          : t -> Pos.t -> t
+  val render           : t -> Notty.image
+  val toggle_mark      : t -> t
+  val cursor           : t -> Pos.t
+  val set_cursor       : t -> Pos.t -> t
+  val set_hover        : t -> Pos.t -> t
+  val choose_new_color : t -> t
 end = struct
   type t =
     { dim : Pos.t
     ; marks : Notty.A.color Map.M(Pos).t
+    ; mark_color : Notty.A.color
     ; cursor : Pos.t
     ; hover : Pos.t option
     } [@@deriving fields]
@@ -57,17 +60,25 @@ end = struct
     { t with hover = Some pos }
 
   let create ~dim ~cursor =
-    { dim; cursor; hover = None; marks = Map.empty (module Pos) }
+    { dim
+    ; cursor
+    ; hover = None
+    ; marks = Map.empty (module Pos)
+    ; mark_color = A.green
+    }
 
   let rand_color () =
     let c () = Random.int 256 in
     A.rgb_888 ~r:(c ())  ~g:(c ())  ~b:(c ())
 
+  let choose_new_color t =
+    { t with mark_color = rand_color () }
+
   let toggle_mark t =
     let marks =
       if Map.mem t.marks t.cursor
       then Map.remove t.marks t.cursor
-      else Map.set t.marks ~key:t.cursor ~data:(rand_color ())
+      else Map.set t.marks ~key:t.cursor ~data:t.mark_color
     in
     { t with marks }
 
@@ -119,6 +130,8 @@ let run () =
              m := Model.toggle_mark !m
            | (`ASCII 'C', [`Ctrl]) ->
              Pipe.close_read events
+           | (`ASCII 'c', []) ->
+             m := Model.choose_new_color !m
            | _ ->
              ())
         | `Resize size ->
